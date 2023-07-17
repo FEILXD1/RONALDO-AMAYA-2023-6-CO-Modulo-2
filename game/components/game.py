@@ -1,5 +1,7 @@
 import pygame
 from game.components.spaceship import Spaceship
+from game.components.enemy import Enemy
+from game.components.enemy2 import Enemy2
 # game.utils.constants -> es un modulo donde tengo "objetos" en memoria como el BG (background)...etc
 #   tambien tenemos valores constantes como el title, etc
 from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE
@@ -17,7 +19,9 @@ class Game:
         self.game_speed = 10
         self.x_pos_bg = 0
         self.y_pos_bg = 0
-        self.Spaceship = Spaceship()
+        self.spaceship = Spaceship()
+        self.enemy = Enemy(4, 2)
+        self.enemy_2 = Enemy2(0)
 
     # este es el "game loop"
     # # Game loop: events - update - draw
@@ -46,7 +50,9 @@ class Game:
     # si tienes un spaceship; el spaceship deberia tener un "update" method que llamamos desde aqui
     def update(self):
         moving = pygame.key.get_pressed()
-        self.Spaceship.update(moving)
+        self.spaceship.update(moving)
+        self.enemy.update(self)
+        self.enemy_2.update()
 
     # este metodo "dibuja o renderiza o refresca mis cambios en la pantalla del juego"
     # aca escribo ALGO de la logica "necesaria" -> repartimos responsabilidades entre clases
@@ -56,11 +62,11 @@ class Game:
         self.clock.tick(FPS) # configuramos cuantos frames dibujaremos por segundo
         self.screen.fill((255, 255, 255)) # esta tupla (255, 255, 255) representa un codigo de color: blanco
         self.draw_background()
-        self.Spaceship.draw(self.screen)
+        self.spaceship.draw(self.screen)
+        self.enemy.draw(self.screen)
+        self.enemy_2.draw(self.screen)
         pygame.display.update()
-        #pygame.display.flip()
-
-
+        pygame.display.flip()
 
     def draw_background(self):
         # le indicamos a pygame que transforme el objeto BG (que es una imagen en memoria, no es un archivo)
