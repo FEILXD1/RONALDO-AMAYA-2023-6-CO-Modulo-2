@@ -8,9 +8,10 @@ class Spaceship(Sprite):
     coord_y = 500
     speed = 10
 
-    def __init__(self):
-        self.font = pygame.font.SysFont(FONT_STYLE, 15)
-        self.font = self.font.render("PLAYER1", True, (255, 0, 255))
+    def __init__(self, name):
+        self.name = name
+        self.font = pygame.font.SysFont(FONT_STYLE, 20)
+        self.font = self.font.render(name, True, (255, 0, 255))
         self.img = SPACESHIP
         self.img = pygame.transform.scale(self.img, (self.refactory_x, self.refactory_y))
         self.rect = self.img.get_rect()

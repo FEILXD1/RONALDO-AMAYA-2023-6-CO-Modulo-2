@@ -1,15 +1,14 @@
 import pygame
 from game.components.spaceship import Spaceship
 from game.components.enemy import Enemy
-from game.components.enemy2 import Enemy2
 # game.utils.constants -> es un modulo donde tengo "objetos" en memoria como el BG (background)...etc
 #   tambien tenemos valores constantes como el title, etc
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ENEMY_1, DEFAULT_TYPE
 
 # Game es la definicion de la clase (plantilla o molde para sacar objetos)
 # self es una referencia que indica que el metodo o el atributo es de cada "objeto" de la clase Game
 class Game:
-    def __init__(self):
+    def __init__(self,num_enemies = 20):
         pygame.init() # este es el enlace con la libreria pygame para poder mostrar la pantalla del juego
         pygame.display.set_caption(TITLE)
         pygame.display.set_icon(ICON)
@@ -19,10 +18,9 @@ class Game:
         self.game_speed = 10
         self.x_pos_bg = 0
         self.y_pos_bg = 0
-        self.spaceship = Spaceship()
-        self.enemy = Enemy(4, 2)
-        self.enemy_2 = Enemy2(0)
-
+        self.space_player = Spaceship("juan")
+        self.enemies = []
+        self.num_enemies = num_enemies
     # este es el "game loop"
     # # Game loop: events - update - draw
     def run(self):
@@ -50,11 +48,17 @@ class Game:
     # si tienes un spaceship; el spaceship deberia tener un "update" method que llamamos desde aqui
     def update(self):
         moving = pygame.key.get_pressed()
-        self.spaceship.update(moving)
-        self.enemy.update(self)
-        self.enemy_2.update()
+        self.space_player.update(moving)
 
-    # este metodo "dibuja o renderiza o refresca mis cambios en la pantalla del juego"
+        for enemy in self.enemies:
+            enemy.update()
+
+
+        if len(self.enemies) < self.num_enemies:
+            enemy_name = f"Enemy {len(self.enemies) + 1}"
+            new_enemy = Enemy(enemy_name, ENEMY_1)
+            self.enemies.append(new_enemy)
+            # este metodo "dibuja o renderiza o refresca mis cambios en la pantalla del juego"
     # aca escribo ALGO de la logica "necesaria" -> repartimos responsabilidades entre clases
     # o sea aqui deberia llamar a los metodos "draw" de mis otros objetos
     # si tienes un spaceship; el spaceship deberia tener un "draw" method que llamamos desde aqui
@@ -62,9 +66,9 @@ class Game:
         self.clock.tick(FPS) # configuramos cuantos frames dibujaremos por segundo
         self.screen.fill((255, 255, 255)) # esta tupla (255, 255, 255) representa un codigo de color: blanco
         self.draw_background()
-        self.spaceship.draw(self.screen)
-        self.enemy.draw(self.screen)
-        self.enemy_2.draw(self.screen)
+        self.space_player.draw(self.screen)
+        for enemy in self.enemies:
+            enemy.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
